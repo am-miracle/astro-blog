@@ -30,59 +30,6 @@
     const json = await response.json();
     const results = json.data
     const posts = (results.listPosts.data);
-
-//     export async function getStaticPaths(slug) {
-//     const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL,{
-//       method:'POST',
-//       headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
-//       },
-//       body: JSON.stringify({
-//         query:  `
-//           query PostBySlug( $PostsGetWhereInput: PostsGetWhereInput!) {
-//             post: getPosts( where: $PostsGetWhereInput ) {
-//                 data {
-//                 id
-//                 title
-//                 slug
-//                 description
-//                 createdOn
-//                 featuredImage
-//                 body
-//                 author {
-//                     name
-//                     slug
-//                     picture
-//                 }
-//                 }
-//             }
-//           }
-//         `,
-//         variables: {
-//             PostsGetWhereInput:{
-//                 slug: slug
-//             }
-//         },
-//       }),
-//     })
-//     const json = await data.json();
-//     const results = json.data
-//     const posts = (results.post.data);
-//     // console.log(posts)
-
-//     // return posts.map((post) => {
-//       return {
-//         params: { slug: slug },
-//         props: { posts },
-//       };
-//     // });
-
-//   };
-//   console.log(getStaticPaths("1"))
-//     const {id} = Astro.params;
-//     const {post} = Astro.props;
-//     console.log(id, post)
 ---
 
 <div class="md:flex md:justify-evenly md:items-center space-y-4 mt-8 px-4 overflow-hidden">

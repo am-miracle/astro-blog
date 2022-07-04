@@ -2,36 +2,7 @@
 import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
 
-const response = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL,
-  {
-    method:'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
-    },
-    body: JSON.stringify({
-      query: `
-            query PostSlugs {
-                listPosts {
-                    data {
-                        title
-                        slug
-                        description
-                        featuredImage
-                        author{
-                            name
-                            slug
-                            picture
-                        }
-                    }
-                }
-            }
-        `
-    }),
-  })
-const json = await response.json();
-const posts = json.data
-console.log(JSON.stringify(posts))
+
 
 ---
 

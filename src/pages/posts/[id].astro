@@ -1,0 +1,58 @@
+---
+export async function getStaticPaths() {
+    const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
+      },
+      body: JSON.stringify({
+        query: `
+            query getPerPost($PostsGetWhereInput: PostsGetWhereInput!) {
+              getPosts(where: $PostsGetWhereInput) {
+                  data {
+                      id
+                      title
+                      featuredImage
+                      author{
+                        name
+                        picture
+                      }
+                      body
+                  }
+              }
+            }
+          `,
+            variables: {
+                "PostsGetWhereInput": {
+                    "id" : id
+                }
+            }
+        }),
+    })
+    const json = await data.json();
+    const results = json.data
+    const posts = (results.getPosts.data);
+    console.log(posts)
+
+  return posts.map((post) => {
+    return {
+      params: { id: post.id },
+      props: { post },
+    };
+  });
+}
+// "62bc4b6c0eba380009920a3d#0004"
+const { id } = Astro.params;
+const { post } = Astro.props;
+---
+
+<div>
+    <h1>{post.title}</h1>
+    <img src={post.featureImage} class='w-full h-full' />
+    <div class='flex items-center justify-center'>
+      <img class='w-5 h-5 rounded-full' src={post.author.picture} />
+      <p>{post.author.name}</p>
+    </div>
+    <p>{post.body}</p>
+</div>

@@ -1,5 +1,38 @@
 ---
-    const response = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
+    // const response = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
+    //   method:'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
+    //   },
+    //   body: JSON.stringify({
+    //     query: `
+    //         query PostSlugs {
+    //             listPosts {
+    //                 data {
+    //                     title
+    //                     slug
+    //                     description
+    //                     featuredImage
+    //                     author{
+    //                         name
+    //                         slug
+    //                         picture
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //       `
+    //     }),
+    // })
+
+
+    // const json = await response.json();
+    // const results = json.data
+    // const posts = (results.listPosts.data);
+    export async function getStaticPaths() {
+
+    const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
       method:'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -7,32 +40,41 @@
       },
       body: JSON.stringify({
         query: `
-            query PostSlugs {
-                listPosts {
+            query getPerPost($PostsGetWhereInput: PostsGetWhereInput!) {
+                getPosts(where: $PostsGetWhereInput) {
                     data {
+                        id
                         title
                         slug
                         description
-                        featuredImage
-                        author{
-                            name
-                            slug
-                            picture
-                        }
+                        body
                     }
                 }
             }
-          `
+          `,
+            variables: {
+                PostsGetWhereInput: {
+                    id : "62bc4b6c0eba380009920a3d#0004"
+                }
+            }
         }),
     })
-
-
-    const json = await response.json();
+    const json = await data.json();
     const results = json.data
-    const posts = (results.listPosts.data);
----
+    const posts = (results.getPosts.data);
 
-<div class="md:flex md:justify-evenly md:items-center space-y-4 mt-8 px-4 overflow-hidden">
+    return posts.map((post) => {
+        return {
+            params: { id: post.id },
+            props: { post },
+        };
+    });
+}
+    const { id } = Astro.params;
+    const { post } = Astro.props;
+---
+<div>{id} {post.description}</div>
+<!-- <div class="md:flex md:justify-evenly md:items-center space-y-4 mt-8 px-4 overflow-hidden">
     {
         posts.map(post =>
             <div class="max-w-md bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 gap-2">
@@ -58,4 +100,4 @@
             </div>
         )
     }
-</div>
+</div> -->

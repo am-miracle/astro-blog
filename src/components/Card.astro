@@ -1,103 +1,28 @@
 ---
-    // const response = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
-    //   method:'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
-    //   },
-    //   body: JSON.stringify({
-    //     query: `
-    //         query PostSlugs {
-    //             listPosts {
-    //                 data {
-    //                     title
-    //                     slug
-    //                     description
-    //                     featuredImage
-    //                     author{
-    //                         name
-    //                         slug
-    //                         picture
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //       `
-    //     }),
-    // })
-
-
-    // const json = await response.json();
-    // const results = json.data
-    // const posts = (results.listPosts.data);
-    export async function getStaticPaths() {
-
-    const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
-      method:'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
-      },
-      body: JSON.stringify({
-        query: `
-            query getPerPost($PostsGetWhereInput: PostsGetWhereInput!) {
-                getPosts(where: $PostsGetWhereInput) {
-                    data {
-                        id
-                        title
-                        slug
-                        description
-                        body
-                    }
-                }
-            }
-          `,
-            variables: {
-                PostsGetWhereInput: {
-                    id : "62bc4b6c0eba380009920a3d#0004"
-                }
-            }
-        }),
-    })
-    const json = await data.json();
-    const results = json.data
-    const posts = (results.getPosts.data);
-
-    return posts.map((post) => {
-        return {
-            params: { id: post.id },
-            props: { post },
-        };
-    });
-}
-    const { id } = Astro.params;
-    const { post } = Astro.props;
----
-<div>{id} {post.description}</div>
-<!-- <div class="md:flex md:justify-evenly md:items-center space-y-4 mt-8 px-4 overflow-hidden">
-    {
-        posts.map(post =>
-            <div class="max-w-md bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 gap-2">
-                <img class="w-full" src={post.featuredImage} alt={post.title} />
-                <div class="p-6 ">
-                    <a href={post.slug}>
-                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.title}</h5>
-                    </a>
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.description}</p>
-                    <div class="flex justify-between items-center">
-                        <div class="flex justify-between items-center gap-2">
-                            <div class="rounded-full w-7 h-7 overflow-hidden">
-								<img src={post.author.picture} class="w-fit h-fit" alt="" />
-							</div>
-                            <p>{post.author.name}</p>
-                        </div>
-                        <a href={post.slug} class="cursor-pointer inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Read more
-                            <svg class="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        )
+	export interface Props {
+        post: any;
     }
-</div> -->
+    const { post } = Astro.props;
+    const id = 'posts/'+post.id;
+---
+	<div class="max-w-md bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 gap-2">
+		<img class="w-full" src={post.featuredImage} alt={post.title} />
+		<div class="p-6 ">
+			<a href={id}>
+				<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{post.title}</h5>
+			</a>
+			<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{post.description}</p>
+			<div class="flex justify-between items-center">
+				<div class="flex justify-between items-center gap-2">
+					<div class="rounded-full w-7 h-7 overflow-hidden">
+						<img src={post.author.picture} class="w-fit h-fit" alt="" />
+					</div>
+					<p>{post.author.name}</p>
+				</div>
+				<a href={id} class="cursor-pointer inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+					Read more
+					<svg class="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+				</a>
+			</div>
+		</div>
+	</div>

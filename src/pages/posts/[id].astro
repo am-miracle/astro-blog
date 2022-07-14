@@ -1,28 +1,28 @@
 ---
-export async function getStaticPaths() {
+export async function getStaticPaths(id) {
     const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
-      method:'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
-      },
-      body: JSON.stringify({
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
+        },
+        body: JSON.stringify({
         query: `
             query getPerPost($PostsGetWhereInput: PostsGetWhereInput!) {
-              getPosts(where: $PostsGetWhereInput) {
-                  data {
-                      id
-                      title
-                      featuredImage
-                      author{
+                getPosts(where: $PostsGetWhereInput) {
+                    data {
+                        id
+                        title
+                        featuredImage
+                        author{
                         name
                         picture
-                      }
-                      body
-                  }
-              }
+                        }
+                        body
+                    }
+                }
             }
-          `,
+            `,
             variables: {
                 "PostsGetWhereInput": {
                     "id" : id
@@ -33,14 +33,13 @@ export async function getStaticPaths() {
     const json = await data.json();
     const results = json.data
     const posts = (results.getPosts.data);
-    console.log(posts)
 
-  return posts.map((post) => {
-    return {
-      params: { id: post.id },
-      props: { post },
-    };
-  });
+    return posts.data.map(post => {
+            return {
+            params: { id: post.id },
+            props: { post },
+            };
+    });
 }
 // "62bc4b6c0eba380009920a3d#0004"
 const { id } = Astro.params;

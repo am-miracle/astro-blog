@@ -34,9 +34,12 @@ const response = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
     const json = await response.json();
     const results = json.data
     const posts = results.listPosts.data;
+    // console.log(posts)
 
 ---
 
 <Layout>
-    {posts.map(p => <Card post={p} />)}
+	<div class="md:flex md:justify-evenly md:items-center space-y-4 mt-8 px-4 overflow-hidden">
+    	{posts.map(post => <Card post={post}></Card>)}
+	</div>
 </Layout>

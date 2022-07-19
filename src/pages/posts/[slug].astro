@@ -49,15 +49,15 @@ const { slug } = Astro.params;
 const { post } = Astro.props;
 ---
 <Layout>
-    <div class="w-4/5 mx-auto my-0 space-y-6 py-3">
-        <h1 class="text-4xl text-center">{post.title}</h1>
-        <figure class="">
-            <img src={post.featuredImage} alt={post.title} class='' />
+    <div class="container mx-auto px-80 mb-8 space-y-6 py-3">
+        <h1 class="text-4xl">{post.title}</h1>
+        <div class='flex items-center gap-4 mb-10'>
+            <img class='w-7 h-7 rounded-full' src={post.author.picture} />
+            <p class="text-xl">{post.author.name}</p>
+          </div>
+        <figure class="relative overflow-hidden shadow-md mb-10">
+            <img src={post.featuredImage} alt={post.title} class='object-top h-full w-full object-cover  shadow-lg rounded-t-lg lg:rounded-lg' />
         </figure>
-        <div class='flex justify-center items-center gap-4 mb-6'>
-          <img class='w-10 h-10 rounded-full' src={post.author.picture} />
-          <p class="text-2xl">{post.author.name}</p>
-        </div>
         <RichTextRenderer data={post.body} />
     </div>
 </Layout>

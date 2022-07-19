@@ -1,0 +1,63 @@
+---
+import { RichTextRenderer } from '@webiny/react-rich-text-renderer'
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths(slug) {
+    const data = await fetch(import.meta.env.ASTRO_PUBLIC_WEBINY_API_URL, {
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.WEBINY_API_TOKEN}`
+        },
+        body: JSON.stringify({
+        query: `
+            query getPerPost($PostsListWhereInput: PostsListWhereInput) {
+                listPosts(where: $PostsListWhereInput) {
+                    data {
+                        id
+                        title
+                        slug
+                        featuredImage
+                        author{
+                            name
+                            picture
+                        }
+                        body
+                    }
+                }
+            }
+            `,
+            variables: {
+                PostsGetWhereInput: {
+                    slug: slug
+                }
+            }
+        })
+    })
+    const json = await data.json();
+    const results = json.data;
+    const posts = results.listPosts.data;
+
+    return posts.map((post) => {
+        return {
+            params: { slug: post.slug },
+            props: { post },
+        }
+    });
+}
+const { slug } = Astro.params;
+const { post } = Astro.props;
+---
+<Layout>
+    <div class="w-4/5 mx-auto my-0 space-y-6 py-3">
+        <h1 class="text-4xl text-center">{post.title}</h1>
+        <figure class="">
+            <img src={post.featuredImage} alt={post.title} class='' />
+        </figure>
+        <div class='flex justify-center items-center gap-4 mb-6'>
+          <img class='w-10 h-10 rounded-full' src={post.author.picture} />
+          <p class="text-2xl">{post.author.name}</p>
+        </div>
+        <RichTextRenderer data={post.body} />
+    </div>
+</Layout>
